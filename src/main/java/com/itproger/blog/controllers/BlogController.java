@@ -1,6 +1,5 @@
 package com.itproger.blog.controllers;
 
-
 import com.itproger.blog.models.Post;
 import com.itproger.blog.repo.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
