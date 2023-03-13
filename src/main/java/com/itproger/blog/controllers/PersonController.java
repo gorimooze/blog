@@ -1,7 +1,6 @@
 package com.itproger.blog.controllers;
 
 import com.itproger.blog.models.Person;
-import com.itproger.blog.models.Post;
 import com.itproger.blog.repo.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

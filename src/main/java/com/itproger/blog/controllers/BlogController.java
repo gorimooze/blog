@@ -1,5 +1,7 @@
 package com.itproger.blog.controllers;
 
+import com.itproger.blog.addition.EmailException;
+import com.itproger.blog.addition.EmailValidator;
 import com.itproger.blog.models.Post;
 import com.itproger.blog.repo.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ public class BlogController {
     @Autowired
     private PostRepository postRepository;
 
+    private EmailValidator emailValidator;
+
     @GetMapping("/blog")
     public String blogMain(Model model) {
         Iterable<Post> posts = postRepository.findAll();
@@ -34,9 +38,18 @@ public class BlogController {
     }
 
     @PostMapping("/blog/add")
-    public String blogPostAdd(@RequestParam String title, @RequestParam String anons, @RequestParam String full_text, Model model) {
-        Post post = new Post(title, anons, full_text);
-        postRepository.save(post);
+    public String blogPostAdd(@RequestParam String title, @RequestParam String anons, @RequestParam String full_text, @RequestParam String email, Model model) {
+        emailValidator = new EmailValidator();
+        try {
+            if (emailValidator.validate(email)) {
+                Post post = new Post(title, anons, full_text, email);
+                postRepository.save(post);
+            }
+        } catch (EmailException e) {
+            model.addAttribute("email_error", "Ошибка, введите email!");
+            return "blog-add";
+        }
+
         return "redirect:/blog";
     }
 
@@ -67,12 +80,24 @@ public class BlogController {
     }
 
     @PostMapping("/blog/{id}/edit")
-    public String blogPostUpdate(@PathVariable(value = "id") long id, @RequestParam String title, @RequestParam String anons, @RequestParam String full_text, Model model) {
-        Post post = postRepository.findById(id).orElseThrow();
-        post.setTitle(title);
-        post.setAnons(anons);
-        post.setFull_text(full_text);
-        postRepository.save(post);
+    public String blogPostUpdate(@PathVariable(value = "id") long id, @RequestParam String title, @RequestParam String anons, @RequestParam String full_text, @RequestParam String email, Model model) {
+        emailValidator = new EmailValidator();
+        emailValidator = new EmailValidator();
+        try {
+            if (emailValidator.validate(email)) {
+                Post post = postRepository.findById(id).orElseThrow();
+            post.setTitle(title);
+            post.setAnons(anons);
+            post.setFull_text(full_text);
+            emailValidator.validate(email);
+            post.setEmail(email);
+            postRepository.save(post);
+            }
+        } catch (EmailException e) {
+            model.addAttribute("email_error", "Ошибка, введите email!");
+            return "blog-edit";
+        }
+
 
         return "redirect:/blog";
     }

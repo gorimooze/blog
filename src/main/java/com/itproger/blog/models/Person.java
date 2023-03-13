@@ -45,4 +45,13 @@ public class Person {
         this.full_name = full_name;
         this.position = position;
     }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", full_name='" + full_name + '\'' +
+                ", position='" + position + '\'' +
+                '}';
+    }
 }
